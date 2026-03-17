@@ -1,26 +1,80 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ChatWindow from "./ChatWindow";
+
+const CLOSED_SIZE = 72;
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isEmbedded, setIsEmbedded] = useState(false);
+  const [viewport, setViewport] = useState({ width: 390, height: 580 });
+
   const collapseWidget = () => setIsOpen(false);
 
+  useEffect(() => {
+    const syncViewport = () => {
+      setIsEmbedded(window.self !== window.top);
+      setViewport({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    syncViewport();
+    window.addEventListener("resize", syncViewport);
+    return () => window.removeEventListener("resize", syncViewport);
+  }, []);
+
+  const embeddedSize = useMemo(() => {
+    const openWidth = Math.min(Math.max(viewport.width - 16, 280), 390);
+    const openHeight = Math.min(Math.max(viewport.height - 16, 420), 640);
+
+    return {
+      width: isOpen ? openWidth : CLOSED_SIZE,
+      height: isOpen ? openHeight : CLOSED_SIZE,
+    };
+  }, [isOpen, viewport.height, viewport.width]);
+
+  useEffect(() => {
+    if (!isEmbedded) return;
+
+    window.parent.postMessage(
+      {
+        source: "inkmasters-ai-widget",
+        type: "resize",
+        isOpen,
+        width: embeddedSize.width,
+        height: embeddedSize.height,
+      },
+      "*"
+    );
+  }, [embeddedSize.height, embeddedSize.width, isEmbedded, isOpen]);
+
+  const shellClass = isEmbedded
+    ? "relative z-50 overflow-visible"
+    : "fixed bottom-5 right-5 z-50 flex flex-col items-end";
+
+  const shellStyle = isEmbedded
+    ? {
+        width: `${embeddedSize.width}px`,
+        height: `${embeddedSize.height}px`,
+      }
+    : undefined;
+
+  const panelClass = isEmbedded
+    ? "absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.14)]"
+    : "mb-3 flex h-[70vh] max-h-[640px] w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.14)] sm:h-[580px] sm:w-[390px]";
+
+  const bubbleClass = isEmbedded
+    ? "absolute bottom-0 right-0 flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95"
+    : "flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95";
+
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
-      {/* Open state: panel only */} 
+    <div className={shellClass} style={shellStyle}>
+      {/* Open state: panel only */}
       {isOpen && (
-      <div
-        className="
-          mb-3 flex flex-col overflow-hidden animate-widget-in
-          w-[calc(100vw-2.5rem)] sm:w-[390px]
-          h-[70vh] sm:h-[580px]
-          max-h-[640px]
-          rounded-2xl border border-gray-200 bg-white
-          shadow-[0_8px_40px_rgba(0,0,0,0.14)]
-        "
-      >
+      <div className={`${panelClass} animate-widget-in`}>
         {/* ── Panel header ─────────────────────────────────────────── */}
         <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 py-3">
           <div className="flex items-center gap-3">
@@ -95,7 +149,7 @@ export default function ChatWidget() {
         <button
           onClick={() => setIsOpen(true)}
           aria-label="Chat with us"
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95"
+          className={bubbleClass}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

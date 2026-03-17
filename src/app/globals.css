@@ -2,13 +2,10 @@
 
 html,
 body {
-  height: 100%;
+  margin: 0;
+  padding: 0;
   background-color: transparent;
   color: #1a1a1a;
-}
-
-#__next {
-  height: 100%;
 }
 
 /* Chat widget panel slide-up */
