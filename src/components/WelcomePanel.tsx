@@ -33,7 +33,7 @@ export default function WelcomePanel({ onQuickAction }: WelcomePanelProps) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-10">
       {/* Icon */}
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-600/15">
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 shadow-sm ring-1 ring-orange-100">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -45,10 +45,10 @@ export default function WelcomePanel({ onQuickAction }: WelcomePanelProps) {
       </div>
 
       {/* Welcome text */}
-      <h2 className="text-center text-lg font-semibold text-white sm:text-xl">
+      <h2 className="text-center text-lg font-semibold text-gray-900 sm:text-xl">
         Ink Masters DTF Gang Sheet Assistant
       </h2>
-      <p className="mt-2 max-w-sm text-center text-sm leading-relaxed text-zinc-400 sm:text-base">
+      <p className="mt-2 max-w-sm text-center text-sm leading-relaxed text-gray-500 sm:text-base">
         Need help picking the right gang sheet? I can recommend the best size
         based on your designs.
       </p>
@@ -59,7 +59,7 @@ export default function WelcomePanel({ onQuickAction }: WelcomePanelProps) {
           <button
             key={action.label}
             onClick={() => onQuickAction(action.message)}
-            className="group rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-left text-sm text-zinc-300 transition hover:border-orange-500/40 hover:bg-zinc-800/80 hover:text-white"
+            className="group rounded-xl border border-gray-200 bg-white px-4 py-3 text-left text-sm text-gray-700 shadow-sm transition hover:border-orange-300 hover:bg-orange-50 hover:text-orange-700"
           >
             <span className="inline-block transition group-hover:translate-x-0.5">
               {action.label}

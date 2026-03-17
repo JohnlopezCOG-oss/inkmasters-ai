@@ -89,7 +89,7 @@ export default function ChatWindow() {
       ) : (
         <div
           ref={scrollRef}
-          className="flex-1 space-y-3 overflow-y-auto px-3 py-4 sm:px-4 sm:py-6"
+          className="flex-1 space-y-3 overflow-y-auto bg-gray-50 px-3 py-4 sm:px-4 sm:py-6"
         >
           {messages.map((msg) => (
             <MessageBubble key={msg.id} message={msg} />
@@ -100,14 +100,14 @@ export default function ChatWindow() {
 
       {/* Error banner */}
       {error && (
-        <div className="mx-3 mb-2 rounded-lg border border-red-800/50 bg-red-950/60 px-4 py-2.5 text-sm text-red-300 sm:mx-4">
+        <div className="mx-3 mb-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-600 sm:mx-4">
           <span className="mr-1.5 font-medium">Error:</span>
           {error}
         </div>
       )}
 
       {/* Input — always visible */}
-      <div className="shrink-0 border-t border-zinc-800 bg-zinc-950/90 px-3 py-3 backdrop-blur-sm sm:px-4">
+      <div className="shrink-0 border-t border-gray-200 bg-white px-3 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.04)] sm:px-4">
         <ChatInput onSend={sendMessage} disabled={isLoading} />
       </div>
     </div>

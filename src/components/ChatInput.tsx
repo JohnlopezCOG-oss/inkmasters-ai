@@ -62,13 +62,13 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
         placeholder="Type your message..."
         disabled={disabled}
         rows={1}
-        className="flex-1 resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-[15px] leading-relaxed text-white placeholder-zinc-500 outline-none transition-colors focus:border-orange-500/70 focus:ring-1 focus:ring-orange-500/30 disabled:opacity-50"
+        className="flex-1 resize-none rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-[15px] leading-relaxed text-gray-900 placeholder-gray-400 shadow-sm outline-none transition-colors focus:border-orange-400 focus:ring-2 focus:ring-orange-100 disabled:opacity-50"
       />
       <button
         type="submit"
         disabled={!canSend}
         aria-label="Send message"
-        className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl bg-orange-600 text-white transition-all hover:bg-orange-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-35 disabled:active:scale-100"
+        className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-xl bg-orange-500 text-white shadow-sm transition-all hover:bg-orange-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-35 disabled:active:scale-100"
       >
         {disabled ? (
           /* spinner while loading */
