@@ -3,7 +3,7 @@
 html,
 body {
   height: 100%;
-  background-color: #f8f8f8;
+  background-color: transparent;
   color: #1a1a1a;
 }
 
@@ -21,6 +21,10 @@ body {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+}
+
+.animate-widget-in {
+  animation: widget-in 0.22s ease-out both;
 }
 
 /* Message entry animation */
