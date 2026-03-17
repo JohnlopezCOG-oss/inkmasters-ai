@@ -5,6 +5,7 @@ import ChatWindow from "./ChatWindow";
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const collapseWidget = () => setIsOpen(false);
 
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
@@ -55,21 +56,39 @@ export default function ChatWidget() {
             </div>
           </div>
 
-          {/* Close button */}
-          <button
-            onClick={() => setIsOpen(false)}
-            aria-label="Close chat"
-            className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="h-5 w-5"
+          <div className="flex items-center gap-1">
+            {/* Minimize button */}
+            <button
+              onClick={collapseWidget}
+              aria-label="Minimize chat"
+              className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
             >
-              <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="h-5 w-5"
+              >
+                <path d="M4.75 9.25a.75.75 0 0 0 0 1.5h10.5a.75.75 0 0 0 0-1.5H4.75Z" />
+              </svg>
+            </button>
+
+            {/* Close button */}
+            <button
+              onClick={collapseWidget}
+              aria-label="Close chat"
+              className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="h-5 w-5"
+              >
+                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* ── Chat content (unchanged) ──────────────────────────────── */}
@@ -82,7 +101,9 @@ export default function ChatWidget() {
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={isOpen ? "Close chat" : "Chat with us"}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95"
+        className={`flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95 ${
+          isOpen ? "pointer-events-none opacity-0 scale-90" : "opacity-100 scale-100"
+        }`}
       >
         {/* Toggle between chat icon and X */}
         <span
