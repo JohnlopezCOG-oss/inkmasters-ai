@@ -51,27 +51,15 @@ export default function ChatWidget() {
     );
   }, [embeddedSize.height, embeddedSize.width, isEmbedded, isOpen]);
 
-  const shellClass = isEmbedded
-    ? "relative z-50 overflow-visible"
-    : "fixed bottom-5 right-5 z-50 flex flex-col items-end";
+  const panelClass =
+    "mb-3 flex h-[70vh] max-h-[640px] w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.14)] sm:h-[580px] sm:w-[390px]";
 
-  const shellStyle = isEmbedded
-    ? {
-        width: `${embeddedSize.width}px`,
-        height: `${embeddedSize.height}px`,
-      }
-    : undefined;
-
-  const panelClass = isEmbedded
-    ? "absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.14)]"
-    : "mb-3 flex h-[70vh] max-h-[640px] w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_8px_40px_rgba(0,0,0,0.14)] sm:h-[580px] sm:w-[390px]";
-
-  const bubbleClass = isEmbedded
-    ? "absolute bottom-0 right-0 flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95"
-    : "flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95";
+  const bubbleClass =
+    "flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg ring-2 ring-orange-400/30 transition-all duration-200 hover:bg-orange-600 hover:scale-105 active:scale-95";
 
   return (
-    <div className={shellClass} style={shellStyle}>
+    <div className="fixed inset-0 z-50 pointer-events-none">
+      <div className="pointer-events-auto absolute bottom-5 right-5 flex flex-col items-end">
       {/* Open state: panel only */}
       {isOpen && (
       <div className={`${panelClass} animate-widget-in`}>
@@ -161,6 +149,7 @@ export default function ChatWidget() {
           </svg>
         </button>
       )}
+      </div>
     </div>
   );
 }
