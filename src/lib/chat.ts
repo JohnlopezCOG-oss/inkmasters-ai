@@ -9,6 +9,7 @@ import {
   calculateGangSheet,
   isCalculatorError,
 } from "./gangSheetCalculator";
+import { parseEscalationStatus } from "./escalationConfig";
 import type { MessageRole } from "@/types/chat";
 
 interface CompletionMessage {
@@ -104,6 +105,54 @@ function buildSizingContext(messages: CompletionMessage[]): string | null {
   ].join("\n");
 }
 
+// ── Escalation context builder ─────────────────────────────────────
+
+/**
+ * Scan the conversation for escalation triggers. If an escalation-worthy
+ * topic is detected, return a context block telling the AI what info has
+ * been collected and what is still missing.
+ * Returns null if no escalation signals are found.
+ */
+function buildEscalationContext(messages: CompletionMessage[]): string | null {
+  const status = parseEscalationStatus(messages);
+
+  if (!status.triggered) return null;
+
+  if (status.complete) {
+    const collected = Object.entries(status.collected)
+      .filter(([, v]) => v !== undefined)
+      .map(([k, v]) => `  - ${k}: ${v}`)
+      .join("\n");
+
+    return [
+      "[ESCALATION CONTEXT — COMPLETE]",
+      "The customer has provided all required info for a human handoff:",
+      collected,
+      "Thank them, confirm you have everything, and let them know the team will follow up.",
+      "Offer the direct contact option as a fallback.",
+    ].join("\n");
+  }
+
+  const collectedEntries = Object.entries(status.collected)
+    .filter(([, v]) => v !== undefined);
+
+  const collectedStr = collectedEntries.length > 0
+    ? `Collected so far:\n${collectedEntries.map(([k, v]) => `  - ${k}: ${v}`).join("\n")}`
+    : "No info collected yet.";
+
+  const missingStr = status.missing
+    .map((f) => `  - ${f.label} — ask: "${f.promptQuestion}"`)
+    .join("\n");
+
+  return [
+    "[ESCALATION CONTEXT — COLLECTING INFO]",
+    "This conversation requires human escalation.",
+    collectedStr,
+    `Still needed:\n${missingStr}`,
+    "Ask for the missing details naturally. Do NOT ask everything at once.",
+  ].join("\n");
+}
+
 // ── Main chat function ─────────────────────────────────────────────
 
 /**
@@ -123,6 +172,11 @@ export async function getAssistantReply(
   const systemMessages: { role: "system"; content: string }[] = [
     { role: "system", content: SYSTEM_PROMPT },
   ];
+
+  const escalationContext = buildEscalationContext(conversationHistory);
+  if (escalationContext) {
+    systemMessages.push({ role: "system", content: escalationContext });
+  }
 
   const sizingContext = buildSizingContext(conversationHistory);
   if (sizingContext) {
